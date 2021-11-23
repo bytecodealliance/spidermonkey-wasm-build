@@ -1,0 +1,5 @@
+gecko-dev/
+obj/
+lib/
+include/
+.DS_Store
