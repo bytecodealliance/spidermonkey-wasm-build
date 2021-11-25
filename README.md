@@ -6,6 +6,7 @@
 
 - Node >= 14.13.1
 - [zx](https://github.com/google/zx)
+- Rust >= 1.56.1 with the `wasm32-wasi` target
 
 
 ## Building from source
