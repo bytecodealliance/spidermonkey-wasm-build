@@ -14,3 +14,10 @@
 - Run `./build.mjs` 
 - Build artifacts will be placed under the `./obj` directory
 
+## Creating a release
+ 
+ - Create a tag in the format `rev-<COMMIT>`
+ - `git push origin rev-<COMMIT>`
+
+The commit to be used, can be found in the [COMMIT](./COMMIT) file
+
