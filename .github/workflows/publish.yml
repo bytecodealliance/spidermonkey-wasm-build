@@ -57,13 +57,13 @@ jobs:
           path: spidermonkey-wasm.tar.gz
 
       - name: Get the version
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/rev-')
+        if: startsWith(github.ref, 'refs/tags/rev-')
         id: get-revision
         run: echo ::set-output name=REV::${GITHUB_REF/refs\/tags\//}
 
       - name: Create release
         uses: marvinpinto/action-automatic-releases@latest
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/rev-')
+        if: startsWith(github.ref, 'refs/tags/rev-')
         with:
           title: SpiderMonkey wasm32-wasi revision ${{ steps.get-revision.outputs.REV }}
           automatic_release_tag: rev-${{ steps.get-revision.outputs.REV }}
