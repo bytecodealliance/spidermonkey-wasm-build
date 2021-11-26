@@ -67,7 +67,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         if: startsWith(github.ref, 'refs/tags/rev-')
         with:
-          title: SpiderMonkey wasm32-wasi revision ${{ steps.get-revision.outputs.REV }}
+          title: spidermonkey-wasm32-wasi-${{ steps.get-revision.outputs.REV }}
           automatic_release_tag: ${{ steps.get-revision.outputs.REV }}
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
