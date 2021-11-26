@@ -12,17 +12,15 @@
 const GECKO_DEV_DIR = 'gecko-dev';
 const UPSTREAM = await $`cat UPSTREAM`;
 const COMMIT = await $`cat COMMIT`;
-const BUILD_ARTIFACTS = ['obj', 'lib', 'include'];
+const BUILD_ARTIFACTS = ['obj', 'include', 'lib'];
 const OBJ_FILES = await $`cat object-files.list`;
+const BASE_PATH = process.cwd();
+const PLATFORM = process.platform;
 
 let buildType = argv['_'][1];
 
 if (buildType !== 'debug') {
   buildType = 'release';
-}
-
-if (!fs.pathExists(GECKO_DEV_DIR)) {
-  await $`git clone ${UPSTREAM}`;
 }
 
 BUILD_ARTIFACTS.forEach(async (artifact) => {
@@ -31,36 +29,42 @@ BUILD_ARTIFACTS.forEach(async (artifact) => {
   }
 });
 
+if (!fs.pathExistsSync(GECKO_DEV_DIR)) {
+  await $`mkdir ${GECKO_DEV_DIR}`;
+  cd(GECKO_DEV_DIR);
+  await $`git init`;
+  await $`git remote add origin ${UPSTREAM}`;
+  await $`git fetch --depth=1 origin ${COMMIT} --progress`;
+  await $`git checkout ${COMMIT}`;
+  cd(BASE_PATH);
+}
+
 cd(GECKO_DEV_DIR);
-await $`git checkout ${COMMIT}`;
 await $`./mach --no-interactive bootstrap --application-choice=js`;
 
-process.env.MOZCONFIG = "../mozconfigs/release";
-process.env.MOZ_OBJDIR = "../obj";
+process.env.MOZCONFIG = `${BASE_PATH}/mozconfigs/release`;
+process.env.MOZ_OBJDIR = `${BASE_PATH}/obj`;
 
 if (buildType === 'debug') {
-  process.env.MOZCONFIG = "../mozconfigs/debug";
+  process.env.MOZCONFIG = `${BASE_PATH}/mozconfigs/debug`;
 }
 
 await $`./mach build`;
-cd('..');
+cd(BASE_PATH);
 
-BUILD_ARTIFACTS.slice(1).forEach(async (artifact) => await fs.ensureDir(artifact));
+BUILD_ARTIFACTS.slice(2).forEach(async (artifact) => await fs.ensureDir(artifact));
 
-['obj/dist/include', 'obj/js/src/js-confdefs.h'].forEach(async (include) => {
-  let target = 'include';
-  if (include.endsWith('js-confdefs.h')) {
-    target = 'include/js-confdefs.h';
-  }
-  await fs.copy(include, target, {dereference: true});
-});
+// Copy headers into final build location
+await $`cp -L -R obj/dist/include include`;
+await $`cp obj/js/src/js-confdefs.h include`;
 
-const obj = OBJ_FILES
+let objs = OBJ_FILES
   .stdout
   .split('\n')
   .filter(entry => entry !== '');
 
+// Copy object files and static libraries into final build location
 const STATIC_LIBS = ['js/src/build/libjs_static.a', `wasm32-wasi/${buildType}/libjsrust.a`];
-obj.concat(STATIC_LIBS).forEach(async (obj) => {
+STATIC_LIBS.concat(objs).forEach(async (obj) => {
   await fs.copy(`obj/${obj}`, `lib/${path.basename(obj)}`);
 });
