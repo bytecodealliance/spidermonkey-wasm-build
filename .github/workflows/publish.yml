@@ -32,10 +32,6 @@ jobs:
         with:
           node-version: 16
 
-      - name: Install zx
-        if: steps.build-cache.outputs.cache-hit != 'true'
-        run: npm install -g zx
-
       - uses: actions-rs/toolchain@v1
         if: steps.build-cache.outputs.cache-hit != 'true'
         with:
@@ -44,8 +40,10 @@ jobs:
           toolchain: 1.56.1
           default: true
 
+      - run: sudo apt-get update
+
       - name: Compile
-        run: ./build.mjs
+        run: node ./build.mjs
         if: steps.build-cache.outputs.cache-hit != 'true'
 
       - name: Archive assets
