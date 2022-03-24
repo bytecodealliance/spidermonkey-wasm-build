@@ -20,7 +20,6 @@ const OBJ_FILES = readFileSync('object-files.list', 'utf-8')
   .split('\n')
   .filter(line => line.length > 0);
 const BASE_PATH = process.cwd();
-const PLATFORM = process.platform;
 
 const buildType = process.argv[2] ?? 'release';
 
