@@ -1,6 +1,7 @@
+ac_add_options --enable-project=js
 ac_add_options --enable-application=js
-ac_add_options --enable-optimize
 ac_add_options --target=wasm32-unknown-wasi
+ac_add_options --enable-optimize
 ac_add_options --without-system-zlib
 ac_add_options --without-intl-api
 ac_add_options --disable-jit
@@ -10,5 +11,5 @@ ac_add_options --disable-cranelift
 ac_add_options --disable-clang-plugin
 ac_add_options --disable-jemalloc
 ac_add_options --enable-debug
-
-ac_add_options --disable-stdcxx-compat
+ 
+ export CXXFLAGS="-D_WASI_EMULATED_SIGNAL=1"
