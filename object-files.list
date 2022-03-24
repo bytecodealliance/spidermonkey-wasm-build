@@ -1,6 +1,5 @@
 memory/build/Unified_cpp_memory_build0.o
 memory/mozalloc/Unified_cpp_memory_mozalloc0.o
-memory/mozalloc/mozalloc_abort.o
 mozglue/misc/AutoProfilerLabel.o
 mozglue/misc/ConditionVariable_noop.o
 mozglue/misc/MmapFaultHandler.o

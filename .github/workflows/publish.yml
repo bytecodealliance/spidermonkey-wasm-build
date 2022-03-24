@@ -37,12 +37,26 @@ jobs:
         with:
           profile: default
           target: wasm32-wasi
-          toolchain: 1.56.1
+          toolchain: 1.57.0
           default: true
 
       - run: sudo apt-get update
 
-      - name: Compile
+      - name: Compile (Debug)
+        run: node ./build.mjs debug
+        if: steps.build-cache.outputs.cache-hit != 'true'
+
+      - name: Archive assets
+        run:  tar -zcvf spidermonkey-wasm-debug.tar.gz lib/ include/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: github.event_name == 'pull_request'
+        with:
+          name: spidermonkey-wasm-debug.tar.gz
+          path: spidermonkey-wasm-debug.tar.gz
+
+      - name: Compile (Release)
         run: node ./build.mjs
         if: steps.build-cache.outputs.cache-hit != 'true'
 
@@ -71,6 +85,7 @@ jobs:
           prerelease: false
           files: |
             spidermonkey-wasm.tar.gz
+            spidermonkey-wasm-debug.tar.gz
 
 
 

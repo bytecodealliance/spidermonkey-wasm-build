@@ -20,7 +20,6 @@ const OBJ_FILES = readFileSync('object-files.list', 'utf-8')
   .split('\n')
   .filter(line => line.length > 0);
 const BASE_PATH = process.cwd();
-const PLATFORM = process.platform;
 
 const buildType = process.argv[2] ?? 'release';
 
@@ -29,17 +28,15 @@ if (buildType !== 'release' && buildType !== 'debug') {
   process.exit(1);
 }
 
-BUILD_ARTIFACTS.forEach(async (artifact) => {
+BUILD_ARTIFACTS.forEach((artifact) => {
   if (existsSync(artifact)) {
-    return new Promise((resolve) => {
-      exec(`rm -rf ${artifact}`, (error) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve();
-        }
-      });
-    });
+    try {
+      execSync(`rm -rf ${artifact}`);
+    } catch (error) {
+      console.error(error.stdout.toString());
+      console.error(error.stderr.toString());
+      process.exit(1);
+    }
   }
 });
 
