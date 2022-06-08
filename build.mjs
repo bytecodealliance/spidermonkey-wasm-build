@@ -6,11 +6,6 @@ import { basename, join } from 'path';
 // TODO:
 // 1. Disable js-shell in mozconfigs/{release,debug}
 //    as it's not needed for the wasm embedding
-// 2. Figure out why debug builds are not working;
-//    when passing `--enable-debug` the clang compiler
-//    complains about signal emulation not supported by WASI.
-//    It's likely that this is a legit bug; mozilla's build
-//    only performs release builds: https://github.com/mozilla/gecko-dev/blob/master/js/src/devtools/automation/variants/wasi
 
 const GECKO_DEV_DIR = 'gecko-dev';
 const UPSTREAM = readFileSync('UPSTREAM', 'utf-8');
