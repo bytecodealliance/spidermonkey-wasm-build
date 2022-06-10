@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { exec, execSync } from 'child_process';
 import { existsSync, mkdirSync, readFileSync } from 'fs';
 import { copyFile } from 'fs/promises';
